@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tablero</title>
+  </head>
+  <body>
+    <h1>Bienvenido, {{ usuario.nombre_usuario }}</h1>
+    <form action="{{ url_for('cerrar_sesion') }}" method="post">
+      <input type="submit" value="Cerrar sesión" />
+    </form>
+
+    <h2>Préstamos:</h2>
+    <ul>
+      {% for prestamo in prestamos %}
+      <li>
+        <strong>Información del vehículo:</strong> {{
+        prestamo.informacion_vehiculo }}<br />
+        <strong>Monto del préstamo:</strong> ${{ prestamo.monto_prestamo }}<br />
+        <strong>Tasa de interés:</strong> {{ prestamo.tasa_interes }}%<br />
+        <strong>Cuota mensual:</strong> ${{ prestamo.pago_mensual }}<br />
+        <strong>Total a pagar:</strong> ${{ prestamo.pago_total }}<br />
+
+        <h3>Historial de pagos:</h3>
+        <table border="1">
+          <tr>
+            <th>Fecha de Pago</th>
+            <th>Monto</th>
+          </tr>
+          {% for pago in prestamo.pagos %}
+          <tr>
+            <td>{{ pago.fecha_pago }}</td>
+            <td>${{ pago.monto }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <!-- Formulario para agregar un nuevo préstamo -->
+    <h2>Agregar nuevo préstamo:</h2>
+    <form method="post" action="{{ url_for('panel') }}">
+      <label for="informacion_vehiculo">Información del vehículo:</label>
+      <input
+        type="text"
+        id="informacion_vehiculo"
+        name="informacion_vehiculo"
+        required
+      />
+      <br />
+      <label for="monto_prestamo">Monto del préstamo:</label>
+      <input type="number" id="monto_prestamo" name="monto_prestamo" required />
+      <br />
+      <label for="tasa_interes">Tasa de interés:</label>
+      <input type="number" id="tasa_interes" name="tasa_interes" required />
+      <br />
+      <label for="periodos">Número de meses:</label>
+      <input type="number" id="periodos" name="periodos" required />
+      <br />
+      <input type="submit" value="Agregar préstamo" />
+    </form>
+  </body>
+</html>
