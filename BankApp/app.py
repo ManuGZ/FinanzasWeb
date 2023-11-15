@@ -5,20 +5,27 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "mysql+pymysql://root:Contrasena@127.0.0.1:3306/BankAPP"  # Remplazen donde dice contrasena con la que pusieron en wl workbench
+] = "mysql+pymysql://root:Luka123@127.0.0.1:3306/BankAPP"  # Remplazen donde dice contrasena con la que pusieron en wl workbench
 app.config["SECRET_KEY"] = "BCDE123"
 db = SQLAlchemy(app)
 
 
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nombre_usuario = db.Column(db.String(80), unique=True, nullable=False)
+    nombre = db.Column(db.String(80), unique=True, nullable=False)
+    dni = db.Column(db.String(10), unique=True, nullable=False)
+    edad = db.Column(db.Integer, nullable=False)
+    telefono = db.Column(db.String(9), nullable=False)
+    correo_electronico = db.Column(db.String(100), unique=True, nullable=False)
     contrasenia = db.Column(db.String(80), nullable=False)
+    ingresos = db.Column(db.Float, nullable=False)
 
 
 class Prestamo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    informacion_vehiculo = db.Column(db.String(255), nullable=False)
+    marca = db.Column(db.String(255), nullable=False)
+    modelo = db.Column(db.String(255), nullable=False)
+    anio = db.Column(db.Integer, nullable=False)
     monto_prestamo = db.Column(db.Float, nullable=False)
     pago_mensual = db.Column(db.Float, nullable=False)
     pago_total = db.Column(db.Float, nullable=False)
@@ -46,9 +53,22 @@ def inicio():
 @app.route("/register", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
-        nombre_usuario = request.form["nombre_usuario"]
+        nombre = request.form["nombre"]
+        dni = request.form["dni"]
+        correo = request.form["correo"]
+        telefono = request.form["telefono"]
+        edad = request.form["edad"]
         contrasenia = request.form["contrasenia"]
-        nuevo_usuario = Usuario(nombre_usuario=nombre_usuario, contrasenia=contrasenia)
+        ingresos = request.form["ingresos"]
+        nuevo_usuario = Usuario(
+            nombre=nombre,
+            dni=dni,
+            edad=edad,
+            telefono=telefono,
+            correo_electronico=correo,
+            contrasenia=contrasenia,
+            ingresos=ingresos,
+        )
         db.session.add(nuevo_usuario)
         db.session.commit()
         return redirect(url_for("inicio"))
@@ -58,10 +78,10 @@ def registro():
 @app.route("/login", methods=["GET", "POST"])
 def inicio_sesion():
     if request.method == "POST":
-        nombre_usuario = request.form["nombre_usuario"]
+        correo_electronico = request.form["correo"]
         contrasenia = request.form["contrasenia"]
         usuario = Usuario.query.filter_by(
-            nombre_usuario=nombre_usuario, contrasenia=contrasenia
+            correo_electronico=correo_electronico, contrasenia=contrasenia
         ).first()
         if usuario:
             session["id_usuario"] = usuario.id
@@ -82,7 +102,9 @@ def panel():
 
     id_usuario = session["id_usuario"]
     if request.method == "POST":
-        informacion_vehiculo = request.form["informacion_vehiculo"]
+        marca = request.form["marca"]
+        modelo = request.form["modelo"]
+        anio = request.form["anio"]
         monto_prestamo = float(request.form["monto_prestamo"])
         tasa_interes = float(request.form["tasa_interes"])
         periodos = int(request.form["periodos"])
@@ -99,7 +121,9 @@ def panel():
         pago_total = pago_mensual * periodos
 
         nuevo_prestamo = Prestamo(
-            informacion_vehiculo=informacion_vehiculo,
+            marca=marca,
+            modelo=modelo,
+            anio=anio,
             monto_prestamo=monto_prestamo,
             pago_mensual=pago_mensual,
             pago_total=pago_total,
