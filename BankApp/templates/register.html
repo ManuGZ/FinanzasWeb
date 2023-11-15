@@ -8,8 +8,23 @@
   <body>
     <h1>Registro de usuario</h1>
     <form method="post" action="{{ url_for('registro') }}">
-      <label for="nombre_usuario">Usuario:</label>
-      <input type="text" id="nombre_usuario" name="nombre_usuario" required />
+      <label for="nombre">Nombre Completo:</label>
+      <input type="text" id="nombre" name="nombre" required />
+      <br />
+      <label for="dni">DNI:</label>
+      <input type="text" id="dni" name="dni" required />
+      <br />
+      <label for="edad">EDAD:</label>
+      <input type="number" id="edad" name="edad" required />
+      <br />
+      <label for="telefono">Numero de Celular:</label>
+      <input type="text" id="telefono" name="telefono" required />
+      <br />
+      <label for="correo">Correo electronico:</label>
+      <input type="email" id="correo" name="correo" required />
+      <br />
+      <label for="ingresos">Ingresos Mensuales:</label>
+      <input type="number" id="ingresos" name="ingresos" required />
       <br />
       <label for="contrasenia">Contraseña:</label>
       <input type="password" id="contrasenia" name="contrasenia" required />
